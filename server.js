@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const meetupRoutes = require('./routes/meetupRoutes');
+const meetupRoutes = require('./router/meetupRoutes');
 
 // Create an instance of Express
 const app = express();
