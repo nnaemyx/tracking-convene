@@ -1,12 +1,18 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const meetupRoutes = require('./routes/meetupRoutes');
 
+// Create an instance of Express
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});
+// Middleware to parse JSON requests
+app.use(bodyParser.json());
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// Mount meetup routes
+app.use('/api/v1/meetups', meetupRoutes);
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
