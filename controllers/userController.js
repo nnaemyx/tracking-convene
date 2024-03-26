@@ -55,7 +55,6 @@ const UserController = {
     }
   },
 
-  // Other controller methods...
 };
 
 module.exports = UserController;

@@ -19,7 +19,6 @@ mongoose.connect('mongodb+srv://Fatimah:lzo07Axq3Uug9w8r@convene.w2ouvol.mongodb
 app.use(express.json());
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/meetups', meetupRoutes);
-// Use other routes as needed
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
