@@ -20,6 +20,12 @@ app.use(express.json());
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/meetups', meetupRoutes);
 
+// Define endpoint to return API Render URL
+app.get('/api-url', (req, res) => {
+  const apiUrl = 'https://tracking-convene.onrender.com/api/v1';
+  res.json({ apiUrl });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
