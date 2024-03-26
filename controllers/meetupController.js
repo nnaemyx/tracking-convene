@@ -1,51 +1,71 @@
-// Import necessary modules
-const { meetups, questions } = require('../data');
+const Meetup = require('../models/meetupModel');
+const Question = require('../models/questionModel');
 
-// Controller functions
 const meetupController = {
-  createMeetup: (req, res) => {
+  createMeetup: async (req, res) => {
     const { title, description } = req.body;
-    const meetup = { id: meetups.length + 1, title, description };
-    meetups.push(meetup);
-    res.json({ status: 201, data: meetup });
+    try {
+      const meetup = await Meetup.create({ title, description });
+      res.status(201).json({ status: 201, data: meetup });
+    } catch (error) {
+      console.error('Error creating meetup:', error);
+      res.status(500).json({ status: 500, error: 'Internal server error' });
+    }
   },
 
-  createQuestion: (req, res) => {
-    const meetupId = parseInt(req.params.meetupId);
+  createQuestion: async (req, res) => {
+    const meetupId = req.params.meetupId;
     const { question } = req.body;
-    const questionId = Object.keys(questions).length + 1;
-    if (!questions[meetupId]) {
-      questions[meetupId] = [];
-    }
-    questions[meetupId].push({ id: questionId, question, upvotes: 0, downvotes: 0 });
-    res.json({ status: 201, data: questions[meetupId] });
-  },
-
-  upvoteQuestion: (req, res) => {
-    const meetupId = parseInt(req.params.meetupId);
-    const questionId = parseInt(req.params.questionId);
-    const meetupQuestions = questions[meetupId];
-    const question = meetupQuestions.find(q => q.id === questionId);
-    if (question) {
-      question.upvotes++;
-      res.json({ status: 200, data: question });
-    } else {
-      res.status(404).json({ status: 404, error: 'Question not found' });
+    try {
+      const newQuestion = await Question.create({ meetup: meetupId, question });
+      res.status(201).json({ status: 201, data: newQuestion });
+    } catch (error) {
+      console.error('Error creating question:', error);
+      res.status(500).json({ status: 500, error: 'Internal server error' });
     }
   },
 
-  downvoteQuestion: (req, res) => {
-    const meetupId = parseInt(req.params.meetupId);
-    const questionId = parseInt(req.params.questionId);
-    const meetupQuestions = questions[meetupId];
-    const question = meetupQuestions.find(q => q.id === questionId);
-    if (question) {
-      question.downvotes++;
-      res.json({ status: 200, data: question });
-    } else {
-      res.status(404).json({ status: 404, error: 'Question not found' });
+  upvoteQuestion: async (req, res) => {
+    const meetupId = req.params.meetupId;
+    const questionId = req.params.questionId;
+    try {
+      const question = await Question.findOneAndUpdate(
+        { _id: questionId, meetup: meetupId },
+        { $inc: { upvotes: 1 } },
+        { new: true }
+      );
+      if (question) {
+        res.status(200).json({ status: 200, data: question });
+      } else {
+        res.status(404).json({ status: 404, error: 'Question not found' });
+      }
+    } catch (error) {
+      console.error('Error upvoting question:', error);
+      res.status(500).json({ status: 500, error: 'Internal server error' });
+    }
+  },
+
+  downvoteQuestion: async (req, res) => {
+    const meetupId = req.params.meetupId;
+    const questionId = req.params.questionId;
+    try {
+      const question = await Question.findOneAndUpdate(
+        { _id: questionId, meetup: meetupId },
+        { $inc: { downvotes: 1 } },
+        { new: true }
+      );
+      if (question) {
+        res.status(200).json({ status: 200, data: question });
+      } else {
+        res.status(404).json({ status: 404, error: 'Question not found' });
+      }
+    } catch (error) {
+      console.error('Error downvoting question:', error);
+      res.status(500).json({ status: 500, error: 'Internal server error' });
     }
   }
+
+  
 };
 
 module.exports = meetupController;
