@@ -1,11 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const userRoutes = require('./router/userRoutes');
 const meetupRoutes = require('./router/meetupRoutes');
 // Import other route files as needed
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors());
 
 mongoose.connect('mongodb+srv://Fatimah:lzo07Axq3Uug9w8r@convene.w2ouvol.mongodb.net/', {
   useNewUrlParser: true,
