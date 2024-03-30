@@ -8,7 +8,7 @@ const meetupRoutes = require('./router/meetupRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:3000' }));
 
 mongoose.connect('mongodb+srv://Fatimah:lzo07Axq3Uug9w8r@convene.w2ouvol.mongodb.net/', {
   useNewUrlParser: true,
