@@ -6,7 +6,6 @@ const meetupSchema = new mongoose.Schema({
   images: {
     type: [String],
   },
-  slug: { type: String, required: true },
 });
 
 const Meetup = mongoose.model("Meetup", meetupSchema);

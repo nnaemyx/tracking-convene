@@ -37,7 +37,6 @@ const meetupController = {
           title,
           description,
           images: imageURLs,
-          slug: slugify(title),
         });
         res.status(201).json({ status: 201, data: meetup });
       });
