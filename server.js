@@ -3,10 +3,16 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userRoutes = require('./router/userRoutes');
 const meetupRoutes = require('./router/meetupRoutes');
-// Import other route files as needed
+const bodyParser = require('body-parser');
+
+// After initializing your Express app
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 
 app.use(cors({ origin: 'http://localhost:3000' }));
 
@@ -24,10 +30,10 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/meetups', meetupRoutes);
 
 // Define endpoint to return API Render URL
-app.get('/api-url', (req, res) => {
-  const apiUrl = 'https://tracking-convene.onrender.com/api/v1';
-  res.json({ apiUrl });
-});
+// app.get('/api-url', (req, res) => {
+//   const apiUrl = 'https://tracking-convene.onrender.com/api/v1';
+//   res.json({ apiUrl });
+// });
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
