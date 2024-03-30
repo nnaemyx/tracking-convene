@@ -6,10 +6,10 @@ const Question = require('../models/questionModel');
 const slugify = require("slugify");
 
 // Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
+cloudinary.config({ 
+  cloud_name: 'dzzsgxtdw', 
+  api_key: '683928135667357', 
+  api_secret: 'qzNetn5zqB3GH_LOy2LxU_nffhY' 
 });
 
 // Configure multer storage for Cloudinary
