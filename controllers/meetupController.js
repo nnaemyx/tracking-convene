@@ -1,14 +1,58 @@
+const cloudinary = require("cloudinary").v2;
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const Meetup = require('../models/meetupModel');
 const Question = require('../models/questionModel');
+const slugify = require("slugify");
 
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
+
+// Configure multer storage for Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "meetups",
+    allowed_formats: ["jpg", "png"],
+  },
+});
+const upload = multer({ storage: storage });
 const meetupController = {
   createMeetup: async (req, res) => {
     const { title, description } = req.body;
     try {
-      const meetup = await Meetup.create({ title, description });
-      res.status(201).json({ status: 201, data: meetup });
+      // Upload images to Cloudinary
+      await upload.array("images")(req, res, async (err) => {
+        if (err) {
+          throw new Error("Error uploading images");
+        }
+
+        const imageURLs = req.files.map((file) => file.path);
+
+        const meetup = await Meetup.create({
+          title,
+          description,
+          images: imageURLs,
+          slug: slugify(title),
+        });
+        res.status(201).json({ status: 201, data: meetup });
+      });
     } catch (error) {
       console.error('Error creating meetup:', error);
+      res.status(500).json({ status: 500, error: 'Internal server error' });
+    }
+  },
+
+  getMeetups: async (req, res) => {
+    try {
+      const meetups = await Meetup.find();
+      res.status(200).json({ status: 200, data: meetups });
+    } catch (error) {
+      console.error('Error getting meetups:', error);
       res.status(500).json({ status: 500, error: 'Internal server error' });
     }
   },
