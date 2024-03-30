@@ -32,28 +32,34 @@ const UserController = {
 
   login: async (req, res) => {
     const { email, password } = req.body;
-
+  
     try {
       // Find user by email
       const user = await User.findOne({ email });
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-
+  
       // Validate password
       const isValidPassword = (password === user.password); // Note: In a real-world application, you should use bcrypt to compare hashed passwords
       if (!isValidPassword) {
         return res.status(401).json({ error: 'Invalid password' });
       }
-
+  
+      // Check user role
+      if (user.role === 'admin') {
+        return res.status(200).json({ message: 'Login successful', isAdmin: true });
+      }
+  
       // Respond with success message or user data
-      res.status(200).json({ message: 'Login successful', user });
+      res.status(200).json({ message: 'Login successful', isAdmin: false });
     } catch (error) {
       // Handle any errors
       console.error('Error logging in user:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
-  },
+  }
+  
 
 };
 
