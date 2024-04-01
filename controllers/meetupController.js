@@ -58,6 +58,23 @@ const meetupController = {
     }
   },
 
+  deleteMeetup: async (req, res) => {
+    const meetupId = req.params.meetupId;
+    try {
+      // Find the meetup by ID and delete it
+      const deletedMeetup = await Meetups.findByIdAndDelete(meetupId);
+      if (deletedMeetup) {
+        res.status(200).json({ status: 200, message: 'Meetup deleted successfully' });
+      } else {
+        res.status(404).json({ status: 404, error: 'Meetup not found' });
+      }
+    } catch (error) {
+      console.error('Error deleting meetup:', error);
+      res.status(500).json({ status: 500, error: 'Internal server error' });
+    }
+  },
+
+
   createQuestion: async (req, res) => {
     const meetupId = req.params.meetupId;
     const { question } = req.body;
