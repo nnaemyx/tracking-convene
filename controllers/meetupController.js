@@ -3,6 +3,7 @@ const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const Meetups = require('../models/meetupsModel');
 const Question = require('../models/questionModel');
+const { default: slugify } = require("slugify");
 
 // Configure Cloudinary
 cloudinary.config({ 
@@ -22,10 +23,6 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 const meetupController = {
   createMeetup: async (req, res) => {
-    const { title, description } = req.body;
-    if (!title || !description) {
-      return res.status(400).json({ error: 'Title and description are required' });
-    }
     try {
       // Upload images to Cloudinary
       await upload.array("images")(req, res, async (err) => {
@@ -35,9 +32,12 @@ const meetupController = {
 
         const imageURLs = req.files.map((file) => file.path);
 
+        if (req.body.title) {
+          req.body.slug = slugify(req.body.title);
+        }
+
         const meetup = await Meetups.create({
-          title,
-          description,
+          ...req.body,
           images: imageURLs,
         });
         res.status(201).json({ status: 201, data: meetup });
