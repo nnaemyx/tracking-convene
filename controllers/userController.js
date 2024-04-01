@@ -52,7 +52,7 @@ const UserController = {
       }
   
       // Respond with success message or user data
-      res.status(200).json({ message: 'Login successful', isAdmin: false });
+      res.status(200).json({ message: 'Login successful', isAdmin: false, user });
     } catch (error) {
       // Handle any errors
       console.error('Error logging in user:', error);
