@@ -50,7 +50,7 @@ const meetupController = {
 
   getMeetups: async (req, res) => {
     try {
-      const meetups = await Meetup.find();
+      const meetups = await Meetups.find();
       res.status(200).json({ status: 200, data: meetups });
     } catch (error) {
       console.error('Error getting meetups:', error);
